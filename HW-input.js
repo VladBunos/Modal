@@ -1,25 +1,8 @@
-// console.log(document.body.firstElementChild);
-
-// let x = document.body.children.length-2;
-// console.log(document.body.children[x]);
-// console.log(document.body.children[x].lastElementChild)
-
-
-
 
 const btnSubmit = document.querySelector('#btnSubmit')
-btnSubmit.addEventListener('click', () =>{
-    const userNameValue = getUserNameValue();
-    const userAgeValue = getUserAgeValue();
-    const userBirthdayValue = getUserBirthdayValue();
-    const userAducationValue = getUserAductionValue();
-    const userGenderValue = getUserGenderValue();
-    isUserNameValueValid = isValid(userNameValue);
-    
-    if (isUserNameValueValid){
-        activateModalWindow()
-    }
-})
+const modal = document.querySelector('.modal');
+const modalContent = document.querySelector('.modal__content')
+const form = document.querySelector('#form')
 
 function getUserNameValue(){
     const userName = document.querySelector('#userName')
@@ -46,7 +29,7 @@ function getUserAductionValue(){
 }
 
 function getUserGenderValue(){
-    const userGender = document.querySelector('#Male')
+    const userGender = document.querySelector('input[name = "gender"]:checked')
     const userGenderValue = userGender.value;
     return userGenderValue;
 }
@@ -59,26 +42,47 @@ function isValid(userNameValue){
     }
 }
 
-function activateModalWindow(){
-    let modal = document.getElementById("myModal");
-    modal.style.display = "block";
-    let span = document.getElementsByClassName("close")[0];
-    span.onclick = function() {
-          modal.style.display = "none";
-        }
-  
-    window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
-  
-  let modalName = document.querySelector('#modal-name')
-  modalName.innerHTML = 'Ваше имя: ' +   userNameValue
+function openModal(){
+    modal.style.display = "block"
+}
+function closeModal(){
+    modal.style.display = "none"
+}
+function showInfo(name, age, birthday, aducation, gender){
+    modalContent.innerHTML = `<p>Ваше Имя:  ${name}</p> 
+    <p>Ваш возраст:  ${age} лет(год)</p> 
+    <p>Ваша дата рождения:  ${birthday}</p>
+    <p>Ваше образование:  ${aducation}</p>
+    <p>Ваш пол:  ${gender}</p>`
 }
 
 
+btnSubmit.addEventListener('click', () =>{
+    event.preventDefault()
+    const userAgeValue = getUserAgeValue();
+    const userBirthdayValue = getUserBirthdayValue();
+    const userAducationValue = getUserAductionValue();
+    const userGenderValue = getUserGenderValue();
+    const userNameValue = getUserNameValue();
+    isUserNameValueValid = isValid(userNameValue);  
+    if (isUserNameValueValid){
+        const userName = document.querySelector('#userName')
+        userName.style.outline= 'none'
+        const errorText = document.querySelector('.error-text')
+        errorText.style.display = 'none'
+        openModal();
+        showInfo(userNameValue, userAgeValue, userBirthdayValue, userAducationValue, userGenderValue)
+    } else {
+        const userName = document.querySelector('#userName')
+        userName.style.outline= '3px solid red'
+        const errorText = document.querySelector('.error-text')
+        errorText.style.display = 'block'
+    }
+})
 
-
-
-
+modal.addEventListener('click', (event =>{
+    if(!event.target.closest('.modal__wrapper')){ 
+        form.reset();
+        modal.style.display = 'none'
+    }
+}))
